@@ -6,8 +6,8 @@ This repository contains a fully local, cloud-free ESPHome configuration for the
 
 ## Hardware Specifications
 * **Microcontroller:** Beken CB3S (BK7231N)
-* **Relays:** 4x High-voltage relays
-* **Inputs:** 4x Tactile physical buttons
+* **Relays:** 4x 6A/Gang Relays
+* **Inputs:** 4x Touch Buttons (White)
 * **Indicator:** 1x Status LED (Blue)
 
 ### Pin Mapping Table
@@ -18,7 +18,7 @@ This repository contains a fully local, cloud-free ESPHome configuration for the
 | **Relay 3** | `P9` | Output | Default OFF |
 | **Relay 4** | `P8` | Output | Default OFF |
 | **Button 1** | `P24` | Input | Pullup, Inverted |
-| **Button 2** | `P10` | Input | **Shared with UART RX** |
+| **Button 2** | `P10` | Input | Pullup, Inverted **Shared with UART RX** |
 | **Button 3** | `P7` | Input | Pullup, Inverted |
 | **Button 4** | `P26` | Input | Pullup, Inverted |
 | **Status LED** | `P11` | Output | Inverted, Blue |
@@ -51,6 +51,7 @@ This repository contains a fully local, cloud-free ESPHome configuration for the
 
 ### 2. Wiring the Serial Connection
 Solder four wires from your USB-to-TTL adapter to the pads on the side of the CB3S module:
+* Website for Pinout: [https://docs.libretiny.eu/boards/cb3s/](https://docs.libretiny.eu/boards/cb3s/)
 * **VCC** -> `3V3`
 * **GND** -> `GND`
 * **TX** on adapter -> `RX1` (`P10`) on CB3S
