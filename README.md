@@ -45,8 +45,9 @@ This repository contains a fully local, cloud-free ESPHome configuration for the
 
 ### 1. Disassembly
 * Disconnect the switch from all AC mains power. **Do not attempt to flash while connected to 110V/220V.**
-* Remove the front faceplate using a pry tool.
-* Unscrew the logic board from the power supply base.
+* Press on the back plastic to remove the two plastic. Lock is usually on the top and bottom side, press the plastic to unlatch it.
+* Remove the front faceplate by desoldering the 7 pins on the sides to expose the CB3S, make sure that the antenna wire is out of the way.
+* You technically dont need to remove the the cb3s from the PCB, but be careful to not trigger the button 2 while its in download mode as its attached to the UART TX1/P11.
 
 ### 2. Wiring the Serial Connection
 Solder four wires from your USB-to-TTL adapter to the pads on the side of the CB3S module:
@@ -62,32 +63,11 @@ Solder four wires from your USB-to-TTL adapter to the pads on the side of the CB
 * Click **Install** > **Manual Download** > **Modern format (.uf2)**.
 * Save the compiled file to your computer.
 
-### 4. Flashing Procedure
-1.  Open `ltchiptool` and select your COM port and the downloaded `.uf2` file.
+### 4. Flashing Procedure (Backup if needed before these steps)
+1.  Open `ltchiptool` and select your COM port, select flash mode and select the `.uf2` file.
 2.  Click **Start Flashing**.
-3.  **Triggering Download Mode:** The Beken chip requires a reboot to enter flash mode. While the software says "Connecting", briefly ground the **`CEN`** pin or quickly power-cycle the `3V3` wire.
-4.  Once the progress bar reaches 100%, desolder the wires and reassemble the switch.
-
----
-
-## Technical Workarounds
-
-### UART Conflict Mitigation
-By default, the Beken chip uses `P10` and `P11` for logging. Since these are used for a button and the LED, the logger must be redirected to prevent crashes:
-```yaml
-logger:
-  baud_rate: 0
-  hardware_uart: UART2
-```
-
-### Disabling Auto-Download-Reboot (ADR)
-To prevent the system from listening for flash commands on the button pin (`P10`), the following build flag is required to strip the ADR service from the firmware:
-```yaml
-esphome:
-  platformio_options:
-    build_flags:
-      - -DLT_AUTO_DOWNLOAD_REBOOT=0
-```
+3.  **Triggering Download Mode:** The Beken chip requires a reboot to enter flash mode. While the software says "Connecting", briefly ground the **`CEN`** pin randomly till you see the light in RX of the TTL Adapter.
+4.  Once the progress bar reaches 100%, desolder the wires and reassemble the switch. (please do check the esphome device gets online tho)
 
 ---
 
@@ -95,8 +75,8 @@ esphome:
 
 ### Sticky Button 2 (P10)
 Button 2 is wired to the hardware `RX` pin. Due to proprietary, closed-source Wi-Fi radio drivers in the Beken SDK, the radio occasionally hijacks this pin to listen for RF calibration commands.
-* **Symptom:** Button 2 may be unresponsive for 5–30 seconds after the switch has been idle.
-* **Workaround:** Pressing the button multiple times usually "wakes" the logic.
+* **Symptom:** Button 2 may be unresponsive for 30–120 seconds after the switch has been idle.
+* **Workaround:** Pressing the button once might disable it in 5 seconds until you can use it again in 30-120sec, but it might not be that big of an issue since use case the user only uses the button once in a minute.
 * **Permanent Fix:** If you are comfortable with trace-cutting, move the physical wire from `P10` to the unused **`P23`** pad on the CB3S and update the YAML accordingly.
 
 ---
