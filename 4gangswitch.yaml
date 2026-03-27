@@ -6,6 +6,7 @@ bk72xx:
   board: cb3s # Cleaner specific board definition
 
 logger:
+
 web_server:
 captive_portal:
 
